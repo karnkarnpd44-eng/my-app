@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-    // Stateสำหรับเก็บข้อมูลจากฟอร์ม
     const [imageUrl, setImageUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg');
-    const [watermarkText, setWatermarkText] = useState('Meeooo');
-    const [textSize, setTextSize] = useState(80);
-    const [textColor, setTextColor] = useState('#ff9999');
-    const [textPosition, setTextPosition] = useState('center');
-
-    // 1. เพิ่ม State ตามโจทย์ข้อ 1 และ 2
-    const [imageWidth, setImageWidth] = useState(600); // ความกว้างรูปภาพ (px)
-    const [textBgColor, setTextBgColor] = useState('rgba(0, 0, 0, 0.5)'); // สีพื้นหลังข้อความ
+    const [watermarkText, setWatermarkText] = useState('Meeoooo');
+    const [textSize, setTextSize] = useState(50); // ค่าเริ่มต้นขนาดฟอนต์
+    const [textColor, setTextColor] = useState('#ff7b7b');
+    const [textBgColor, setTextBgColor] = useState('#c3b036');
+    const [bgOpacity, setBgOpacity] = useState(0.5); // Slider ความโปร่งแสง
+    const [textPosition, setTextPosition] = useState('top-left');
 
     // คำนวณตำแหน่งลายน้ำตามที่เลือกใน Dropdown
     const getPositionStyle = () => {
@@ -30,126 +27,147 @@ function App() {
         }
     };
 
-    return ( <
-        div style = {
-            { textAlign: 'center', padding: '20px' }
-        } >
-        <
-        h2 > Image Watermark Generator < /h2>
+    // แปลงค่า Hex Color + Opacity เป็น RGBA
+    const hexToRgba = (hex, opacity) => {
+        let c = hex.replace('#', '');
+        if (c.length === 3) {
+            c = c.split('').map(char => char + char).join('');
+        }
+        const r = parseInt(c.substring(0, 2), 16) || 0;
+        const g = parseInt(c.substring(2, 4), 16) || 0;
+        const b = parseInt(c.substring(4, 6), 16) || 0;
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    };
 
-        { /* ฟอร์มกรอกข้อมูล */ } <
-        div style = {
-            { display: 'inline-block', textAlign: 'right', marginBottom: '20px' }
-        } >
+    return ( <
+        div className = "container mt-4" >
         <
-        div >
+        h2 className = "mb-4" > Watermark Generator < /h2>
+
+        { /* ใช้ Bootstrap Grid ตามโจทย์ */ } <
+        div className = "row" > { /* ฝั่งซ้าย: ฟอร์มควบคุม */ } <
+        div className = "col-md-5" >
+        <
+        div className = "form-group mb-3" >
         <
         label > Image URL: < /label> <
         input type = "text"
+        className = "form-control"
         value = { imageUrl }
         onChange = {
-            (e) => setImageUrl(e.target.value)
-        }
-        /> < /
-        div > <
-        div >
+            (e) => setImageUrl(e.target.value) }
+        /> <
+        /div>
+
+        <
+        div className = "form-group mb-3" >
         <
         label > Watermark Text: < /label> <
         input type = "text"
+        className = "form-control"
         value = { watermarkText }
         onChange = {
-            (e) => setWatermarkText(e.target.value)
-        }
-        /> < /
-        div > <
-        div >
+            (e) => setWatermarkText(e.target.value) }
+        /> <
+        /div>
+
+        { /* เปลี่ยน Text Size จาก number ให้เป็น Slider (range) ตามโจทย์ 5.6 */ } <
+        div className = "form-group mb-3" >
         <
-        label > Text Size(px): < /label> <
-        input type = "number"
+        label > Text Size: { textSize } < /label> <
+        input type = "range"
+        className = "form-range"
+        min = "10"
+        max = "150"
         value = { textSize }
         onChange = {
-            (e) => setTextSize(e.target.value)
-        }
-        /> < /
-        div > <
-        div >
+            (e) => setTextSize(e.target.value) }
+        /> <
+        /div>
+
+        <
+        div className = "form-group mb-3" >
         <
         label > Text Color: < /label> <
         input type = "color"
+        className = "form-control form-control-color w-100"
         value = { textColor }
         onChange = {
-            (e) => setTextColor(e.target.value)
-        }
-        /> < /
-        div >
+            (e) => setTextColor(e.target.value) }
+        /> <
+        /div>
 
-        { /* เพิ่มช่องป้อน สีพื้นหลังข้อความ (ข้อ 2 ตามโจทย์) */ } <
-        div >
+        <
+        div className = "form-group mb-3" >
         <
         label > Text Background Color: < /label> <
         input type = "color"
+        className = "form-control form-control-color w-100"
         value = { textBgColor }
         onChange = {
-            (e) => setTextBgColor(e.target.value)
-        }
-        /> < /
-        div >
+            (e) => setTextBgColor(e.target.value) }
+        /> <
+        /div>
 
-        { /* เพิ่มช่องป้อน ความกว้างของรูปภาพ (ข้อ 1 ตามโจทย์) */ } <
-        div >
+        { /* Slider Background Opacity */ } <
+        div className = "form-group mb-3" >
         <
-        label > Image Width(px): < /label> <
-        input type = "number"
-        value = { imageWidth }
+        label > Background Opacity: < /label> <
+        input type = "range"
+        className = "form-range"
+        min = "0"
+        max = "1"
+        step = "0.01"
+        value = { bgOpacity }
         onChange = {
-            (e) => setImageWidth(e.target.value)
-        }
-        /> < /
-        div >
+            (e) => setBgOpacity(e.target.value) }
+        /> <
+        /div>
 
         <
-        div >
+        div className = "form-group mb-3" >
         <
         label > Text Position: < /label> <
-        select value = { textPosition }
+        select className = "form-select"
+        value = { textPosition }
         onChange = {
-            (e) => setTextPosition(e.target.value)
-        } >
+            (e) => setTextPosition(e.target.value) } >
         <
-        option value = "top-left" > top - left < /option> <
-        option value = "top-right" > top - right < /option> <
-        option value = "bottom-left" > bottom - left < /option> <
-        option value = "bottom-right" > bottom - right < /option> <
-        option value = "center" > (Center) < /option> < /
-        select > <
-        /div> < /
-        div >
+        option value = "top-left" > Top Left < /option> <
+        option value = "top-right" > Top Right < /option> <
+        option value = "bottom-left" > Bottom Left < /option> <
+        option value = "bottom-right" > Bottom Right < /option> <
+        option value = "center" > Center < /option> <
+        /select> <
+        /div> <
+        /div>
 
-        { /* ส่วนแสดงผลรูปภาพและลายน้ำ */ } <
-        div className = "image-container"
-        style = {
-            { width: `${imageWidth}px`, margin: '0 auto' }
-        } >
+        { /* ฝั่งขวา: การแสดงผลรูปภาพและลายน้ำ */ } <
+        div className = "col-md-7" >
+        <
+        div className = "image-container position-relative overflow-hidden d-inline-block" >
         <
         img src = { imageUrl }
-        alt = "Watermarked"
-        style = {
-            { width: '100%', display: 'block' }
-        }
-        />
+        alt = "Preview"
+        className = "img-fluid" / >
 
         <
-        div className = "watermark-text"
+        div className = "watermark-text position-absolute"
         style = {
             {
                 ...getPositionStyle(),
                     fontSize: `${textSize}px`,
                     color: textColor,
-                    backgroundColor: textBgColor, // ใช้สีพื้นหลังที่เลือกจาก State
+                    backgroundColor: hexToRgba(textBgColor, bgOpacity),
+                    padding: '5px 15px',
+                    whiteSpace: 'nowrap'
             }
-        } > { watermarkText } <
-        /div> < /
-        div > <
+        } >
+        { watermarkText } <
+        /div> <
+        /div> <
+        /div> <
+        /div> <
         /div>
     );
 }
