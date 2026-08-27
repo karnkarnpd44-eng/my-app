@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-    // State สำหรับเก็บข้อมูลจากฟอร์ม
+    // Stateสำหรับเก็บข้อมูลจากฟอร์ม
     const [imageUrl, setImageUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg');
     const [watermarkText, setWatermarkText] = useState('Meeooo');
     const [textSize, setTextSize] = useState(80);
