@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function App() {
     const image1 = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80';
-    const caption1 = 'หมาแดง';
+    const caption1 = 'หมาแดงง';
 
     const image2 = 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80';
     const caption2 = 'แมวลายวัว';
