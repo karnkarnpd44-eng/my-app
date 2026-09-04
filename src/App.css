@@ -1,38 +1,182 @@
-.App {
-  text-align: center;
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.meme-container {
+    display: flex;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    max-width: 900px;
+    width: 100%;
+    gap: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+/* ฝั่งซ้าย */
+
+.preview-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.App-link {
-  color: #61dafb;
+.toolbar-top {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-bottom: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.toolbar-top button {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.meme-box {
+    position: relative;
+    width: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.meme-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+
+/* ข้อความสไตล์มีมมาตรฐาน (ข้อความสีขาว ขอบดำ) */
+
+.meme-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-family: 'Impact', sans-serif;
+    font-size: 28px;
+    text-transform: uppercase;
+    text-align: center;
+    width: 90%;
+    margin: 0;
+    text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+}
+
+.top-text {
+    top: 10px;
+}
+
+.bottom-text {
+    bottom: 10px;
+}
+
+
+/* ฝั่งขวา */
+
+.control-section {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.btn-upload {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.control-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.btn-generate {
+    background: #00b0ff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-generate:hover {
+    background: #0091ea;
+}
+
+.btn-reset {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+/* Responsive กรณีหน้าจอมือถือ */
+
+@media (max-width: 768px) {
+    .meme-container {
+        flex-direction: column;
+    }
+    .control-section {
+        width: 100%;
+    }
 }

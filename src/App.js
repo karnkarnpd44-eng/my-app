@@ -1,174 +1,118 @@
 import React, { useState } from 'react';
+import html2canvas from 'html2canvas';
 import './App.css';
 
 function App() {
-    const [imageUrl, setImageUrl] = useState('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg');
-    const [watermarkText, setWatermarkText] = useState('Meeoooo');
-    const [textSize, setTextSize] = useState(50); // ค่าเริ่มต้นขนาดฟอนต์
-    const [textColor, setTextColor] = useState('#ff7b7b');
-    const [textBgColor, setTextBgColor] = useState('#c3b036');
-    const [bgOpacity, setBgOpacity] = useState(0.5); // Slider ความโปร่งแสง
-    const [textPosition, setTextPosition] = useState('top-left');
+    const [image, setImage] = useState('https://imgflip.com/s/meme/Mocking-Spongebob.jpg');
+    const [text1, setText1] = useState('');
+    const [text2, setText2] = useState('');
 
-    // คำนวณตำแหน่งลายน้ำตามที่เลือกใน Dropdown
-    const getPositionStyle = () => {
-        switch (textPosition) {
-            case 'top-left':
-                return { top: '20px', left: '20px' };
-            case 'top-right':
-                return { top: '20px', right: '20px' };
-            case 'bottom-left':
-                return { bottom: '20px', left: '20px' };
-            case 'bottom-right':
-                return { bottom: '20px', right: '20px' };
-            case 'center':
-            default:
-                return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
+    // ฟีเจอร์ที่ 1: อัปโหลดรูปภาพ
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(URL.createObjectURL(file));
         }
     };
 
-    // แปลงค่า Hex Color + Opacity เป็น RGBA
-    const hexToRgba = (hex, opacity) => {
-        let c = hex.replace('#', '');
-        if (c.length === 3) {
-            c = c.split('').map(char => char + char).join('');
+    // ฟีเจอร์ที่ 3: บันทึก/ดาวน์โหลดมีม
+    const handleGenerateMeme = () => {
+        const memeElement = document.getElementById('meme-preview');
+        if (memeElement) {
+            html2canvas(memeElement, { useCORS: true }).then((canvas) => {
+                const link = document.createElement('a');
+                link.download = 'meme.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         }
-        const r = parseInt(c.substring(0, 2), 16) || 0;
-        const g = parseInt(c.substring(2, 4), 16) || 0;
-        const b = parseInt(c.substring(4, 6), 16) || 0;
-        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    };
+
+    const handleReset = () => {
+        setText1('');
+        setText2('');
     };
 
     return ( <
-        div className = "container mt-4" >
+        div className = "meme-container" > { /* ฝั่งซ้าย: พรีวิวมีม */ } <
+        div className = "preview-section" >
         <
-        h2 className = "mb-4" > Watermark Generator < /h2>
+        div className = "toolbar-top" >
+        <
+        button type = "button" > Spacing < /button> <
+        button type = "button" > Add Image < /button> <
+        button type = "button" > Draw < /button> < /
+        div >
 
-        { /* ใช้ Bootstrap Grid ตามโจทย์ */ } <
-        div className = "row" > { /* ฝั่งซ้าย: ฟอร์มควบคุม */ } <
-        div className = "col-md-5" >
         <
-        div className = "form-group mb-3" >
+        div id = "meme-preview"
+        className = "meme-box" >
         <
-        label > Image URL: < /label> <
+        img src = { image }
+        alt = "Meme template" / >
+        <
+        h2 className = "meme-text top-text" > { text1 } < /h2> <
+        h2 className = "meme-text bottom-text" > { text2 } < /h2> < /
+        div > <
+        /div>
+
+        { /* ฝั่งขวา: แผงควบคุม (Control Panel) */ } <
+        div className = "control-section" >
+        <
+        div className = "upload-btn-wrapper" >
+        <
+        label htmlFor = "file-upload"
+        className = "btn-upload" >
+        Upload new template <
+        /label> <
+        input id = "file-upload"
+        type = "file"
+        accept = "image/*"
+        onChange = { handleImageUpload }
+        /> < /
+        div >
+
+        <
+        h3 > Mocking Spongebob < /h3>
+
+        { /* ฟีเจอร์ที่ 2: ข้อความซ้อนทับ (Text Overlay Inputs) */ } <
+        div className = "input-group" >
+        <
         input type = "text"
-        className = "form-control"
-        value = { imageUrl }
+        placeholder = "Text #1"
+        value = { text1 }
         onChange = {
-            (e) => setImageUrl(e.target.value) }
-        /> <
-        /div>
+            (e) => setText1(e.target.value)
+        }
+        /> < /
+        div >
 
         <
-        div className = "form-group mb-3" >
+        div className = "input-group" >
         <
-        label > Watermark Text: < /label> <
         input type = "text"
-        className = "form-control"
-        value = { watermarkText }
+        placeholder = "Text #2"
+        value = { text2 }
         onChange = {
-            (e) => setWatermarkText(e.target.value) }
-        /> <
-        /div>
-
-        { /* เปลี่ยน Text Size จาก number ให้เป็น Slider (range) ตามโจทย์ 5.6 */ } <
-        div className = "form-group mb-3" >
-        <
-        label > Text Size: { textSize } < /label> <
-        input type = "range"
-        className = "form-range"
-        min = "10"
-        max = "150"
-        value = { textSize }
-        onChange = {
-            (e) => setTextSize(e.target.value) }
-        /> <
-        /div>
+            (e) => setText2(e.target.value)
+        }
+        /> < /
+        div >
 
         <
-        div className = "form-group mb-3" >
+        div className = "action-buttons" >
         <
-        label > Text Color: < /label> <
-        input type = "color"
-        className = "form-control form-control-color w-100"
-        value = { textColor }
-        onChange = {
-            (e) => setTextColor(e.target.value) }
-        /> <
-        /div>
-
-        <
-        div className = "form-group mb-3" >
-        <
-        label > Text Background Color: < /label> <
-        input type = "color"
-        className = "form-control form-control-color w-100"
-        value = { textBgColor }
-        onChange = {
-            (e) => setTextBgColor(e.target.value) }
-        /> <
-        /div>
-
-        { /* Slider Background Opacity */ } <
-        div className = "form-group mb-3" >
-        <
-        label > Background Opacity: < /label> <
-        input type = "range"
-        className = "form-range"
-        min = "0"
-        max = "1"
-        step = "0.01"
-        value = { bgOpacity }
-        onChange = {
-            (e) => setBgOpacity(e.target.value) }
-        /> <
-        /div>
-
-        <
-        div className = "form-group mb-3" >
-        <
-        label > Text Position: < /label> <
-        select className = "form-select"
-        value = { textPosition }
-        onChange = {
-            (e) => setTextPosition(e.target.value) } >
-        <
-        option value = "top-left" > Top Left < /option> <
-        option value = "top-right" > Top Right < /option> <
-        option value = "bottom-left" > Bottom Left < /option> <
-        option value = "bottom-right" > Bottom Right < /option> <
-        option value = "center" > Center < /option> <
-        /select> <
-        /div> <
-        /div>
-
-        { /* ฝั่งขวา: การแสดงผลรูปภาพและลายน้ำ */ } <
-        div className = "col-md-7" >
-        <
-        div className = "image-container position-relative overflow-hidden d-inline-block" >
-        <
-        img src = { imageUrl }
-        alt = "Preview"
-        className = "img-fluid" / >
-
-        <
-        div className = "watermark-text position-absolute"
-        style = {
-            {
-                ...getPositionStyle(),
-                    fontSize: `${textSize}px`,
-                    color: textColor,
-                    backgroundColor: hexToRgba(textBgColor, bgOpacity),
-                    padding: '5px 15px',
-                    whiteSpace: 'nowrap'
-            }
-        } >
-        { watermarkText } <
-        /div> <
-        /div> <
-        /div> <
-        /div> <
-        /div>
+        button className = "btn-generate"
+        onClick = { handleGenerateMeme } >
+        Generate Meme <
+        /button> <
+        button className = "btn-reset"
+        onClick = { handleReset } >
+        Reset <
+        /button> < /
+        div > <
+        /div> < /
+        div >
     );
 }
 
